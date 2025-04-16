@@ -1,127 +1,107 @@
-create database homework3new
+create database homework4
+--Write a query to select the top 5 employees from the Employees table.
+select top 5 * from Employees
+--Use SELECT DISTINCT to select unique ProductName values from the Products table.
+select distinct ProductName from Products
+--Write a query that filters the Products table to show products with Price > 100.
+select * from Products
+where Price > 100
 
---Define and explain the purpose of BULK INSERT in SQL Server.
---List four file formats that can be imported into SQL Server.
---Create a table Products with columns: ProductID (INT, PRIMARY KEY), ProductName (VARCHAR(50)), Price (DECIMAL(10,2)).
-create table Products
-(ProductID INT PRIMARY KEY,
-ProductName varchar(50),
-Price decimal(10,2));
+--Write a query to select all CustomerName values that start with 'A' using the LIKE operator.
+select * from Customers
+where FirstName like 'A_%' 
+--Order the results of a Products query by Price in ascending order.
+select * from Products
+order by Price asc
 
---Insert three records into the Products table using INSERT INTO.
-insert into Products values
-(101, 'Samsung', 1200.00),
-(102, 'Iphone',  1400.00),
-(103, 'Redmi', 1000.00);
---Explain the difference between NULL and NOT NULL with examples.
---Add a UNIQUE constraint to the ProductName column in the Products table.
-alter table Products
-add constraint UQ_ProductName unique (ProductName);
---Write a comment in a SQL query explaining its purpose.
---it is comment to explain this code in sql
---Create a table Categories with a CategoryID as PRIMARY KEY and a CategoryName as UNIQUE.
-create table Categories (
-  CategoryID int Primary key,
-  CategoryName varchar(100) unique
-);
---Explain the purpose of the IDENTITY column in SQL Server.
+--Write a query that uses the WHERE clause to filter for employees with Salary >= 60000 and Department = 'HR'.
+select * from Employees
+where Salary >= 60000 and DepartmentName = 'HR'
+
+--Use ISNULL to replace NULL values in the Email column with the text "noemail@example.com".From Employees table
+
+select isnull(Email, 'noemail@example.com') Email from Employees
+
+--Write a query that shows all products with Price BETWEEN 50 AND 100.
+select * from Products
+where Price between 50 and 100;
+
+--Use SELECT DISTINCT on two columns (Category and ProductName) in the Products table.
+  select distinct Category, ProductName from Products
+
+--After SELECT DISTINCT on two columns (Category and ProductName) Order the results by ProductName in descending order.
+select distinct Category, ProductName from Products
+order by ProductName desc
+
 --🟠 Medium-Level Tasks (10)
---Use BULK INSERT to import data from a text file into the Products table.
- BULK INSERT Products
- FROM 'C:\Your\Path\products.txt'
-    WITH (
-    FIELDTERMINATOR = ',',  -- separates columns
-    ROWTERMINATOR = '\n',   -- separates rows
-    FIRSTROW = 1            -- skip header if needed
-);
---Create a FOREIGN KEY in the Products table that references the Categories table.
-drop table Products
-create table Products (
-   ProductID int primary key,
-   ProductName varchar(100),
-   Price decimal (10, 2),
-   CategoryID int, --foreign key column
-
-   foreign key (CategoryID) references Categories(CategoryID)
-
-);
+--Write a query to select the top 10 products from the Products table, ordered by Price DESC.
+  select top 10 * from  Products
+  order by Price desc
 
 
---Explain the differences between PRIMARY KEY and UNIQUE KEY with examples.
---Add a CHECK constraint to the Products table ensuring Price > 0.
-alter table Products
-add constraint CK_Products_Price check (Price > 0);
---Modify the Products table to add a column Stock (INT, NOT NULL).
-alter table Products
-add Stock int not null
---Use the ISNULL function to replace NULL values in a column with a default value.
-SELECT ProductID, ProductName, ProductCategory, Price, ISNULL(StockQuantity, 0) AS StockQuantity
-FROM Products;
---Describe the purpose and usage of FOREIGN KEY constraints in SQL Server.
---🔴 Hard-Level Tasks (10)
---Write a script to create a Customers table with a CHECK constraint ensuring Age >= 18.
-CREATE TABLE Customers (
-    CustomerID INT PRIMARY KEY,
-    FirstName VARCHAR(255),
-    LastName VARCHAR(255),
-    Age INT CHECK (Age >= 18),
-    City VARCHAR(100),
-    Email VARCHAR(255)
-);
---Create a table with an IDENTITY column starting at 100 and incrementing by 10.
-CREATE TABLE MyTable (
-    ID INT IDENTITY(100, 10) PRIMARY KEY,
-    Data VARCHAR(255)
-);
---Write a query to create a composite PRIMARY KEY in a new table OrderDetails.
+--Use COALESCE to return the first non-NULL value from FirstName or LastName in the Employees table.
+select coalesce(FirstName, LastName, 'Unknown') as DisplayName from Employees
+--Write a query that selects distinct Category and Price from the Products table.
+ select distinct(Category), Price from Products
 
-CREATE TABLE OrderDetails (
-    OrderID INT,
-    ProductID INT,
-    Quantity INT,
-    Price DECIMAL(10, 2),
-    PRIMARY KEY (OrderID, ProductID)
-);
---Explain with examples the use of COALESCE and ISNULL functions for handling NULL values.
-CREATE TABLE SampleData (
-    ID INT,
-    Value VARCHAR(50)
-);
+--Write a query that filters the Employees table to show employees whose Age is either between 30 and 40 or Department = 'Marketing'.
+select Age, DepartmentName from Employees
+where Age between 30 and 40 or DepartmentName = 'Marketing' 
+--Use OFFSET-FETCH to select rows 11 to 20 from the Employees table, ordered by Salary DESC.
+select * from Employees
+order by Salary desc
+offset 10 rows fetch next 10 rows only
 
-INSERT INTO SampleData (ID, Value) VALUES
-(1, 'Data1'),
-(2, NULL),
-(3, 'Data3');
+--Write a query to display all products with Price <= 1000 and Stock > 50, sorted by Stock in ascending order.
+select Price, StockQuantity from Products
+where Price <= 1000 and StockQuantity > 50
+order by StockQuantity 
 
--- Use ISNULL to replace NULL values
-SELECT ID, ISNULL(Value, 'No Value') AS ValueWithReplacement
-FROM SampleData;
+--Write a query that filters the Products table for ProductName values containing the letter 'e' using LIKE.
+select ProductName from Products
+where ProductName like '%e%'
+--Use IN operator to filter for employees who work in either 'HR', 'IT', or 'Finance'.
+select * from Employees
+where DepartmentName in ('HR','IT','Finance')
+--Use ORDER BY to display a list of customers ordered by City in ascending and PostalCode in descending order.Use customers table
+select City, PostalCode from Customers
+order by City asc, PostalCode desc
+--🔴 Hard-Level Tasks
+--Write a query that selects the top 10 products with the highest sales, using TOP(10) and ordered by SalesAmount DESC.
 
-SELECT COALESCE(NULL, NULL, 'Found Value', 'Another Value') AS Result;
+select top 10 * from Sales
+order by SaleAmount desc
+--Combine FirstName and LastName into one column named FullName in the Employees table. (only in select statement)
+select Firstname + ' ' + LastName as FullName from Employees
+--Write a query to select the distinct Category, ProductName, and Price for products that are priced above $50, using DISTINCT on three columns.
+select distinct Category, ProductName, Price from Products
+where Price > 50
+--Write a query that selects products whose Price is less than 10% of the average price in the Products table. 
+--(Do some research on how to find average price of all products)
+select * from Products
+where Price < (select avg(Price)* 0.1 from Products)
+--Use WHERE clause to filter for employees whose Age is less than 30 and who work in either the 'HR' or 'IT' department.
+select Age, DepartmentName from Employees
+where Age < 30 and DepartmentName in ('HR','IT')
 
 
--- Example using COALESCE with sample table.
-SELECT ID, COALESCE(Value, 'No Value', 'Still No Value') AS ValueWithReplacement
-FROM SampleData;
---Create a table Employees with both PRIMARY KEY on EmpID and UNIQUE KEY on Email.
-CREATE TABLE Employees (
-    EmpID INT PRIMARY KEY,
-    FirstName VARCHAR(255),
-    LastName VARCHAR(255),
-    Email VARCHAR(255) UNIQUE,
-    Department VARCHAR(100),
-    Salary DECIMAL(10, 2)
-);
---Write a query to create a FOREIGN KEY with ON DELETE CASCADE and ON UPDATE CASCADE options.
+--Use LIKE with wildcard to select all customers whose Email contains the domain '@gmail.com'.
 
-CREATE TABLE Orders (
-    OrderID INT PRIMARY KEY,
-    CustomerID INT,
-    OrderDate DATE,
-    -- Other order columns...
-    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
- 
+select Email from Customers
+where Email like '%@gmail.com%'
+--Write a query that uses the ALL operator to find employees whose salary is greater than all employees in the 'Sales' department.
+select * from Employees
+where Salary > all (Select Salary from Employees where DepartmentName = 'Sales');
+
+--Write a query that filters the Orders table for orders placed in the last 180 days using BETWEEN and CURRENT_DATE. 
+--(Search how to get the current date)
+select * from Orders
+where OrderDate between dateadd(day, -180, getdate()) and getdate()
+--homework was doing
+DROP TABLE IF EXISTS Employees;
+select * from Employees
+CREATE TABLE Employees ( EmployeeID INT PRIMARY KEY, FirstName VARCHAR(50) NULL, 
+LastName VARCHAR(50) NULL, DepartmentName VARCHAR(50), Salary DECIMAL(10, 2), 
+HireDate DATE, Age INT, Email VARCHAR(100) NULL, Country VARCHAR(50) );
+
 
