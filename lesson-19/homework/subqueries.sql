@@ -9,10 +9,8 @@ INSERT INTO employees (id, name, salary) VALUES
 (2, 'Bob', 60000),
 (3, 'Charlie', 50000);
 --1
-select id, name, 
-(select min(salary) min_sal from employees ins where outs.salary > ins.salary) min_sal from employees outs
-where (select min(salary) min_sal from employees ins where outs.salary > ins.salary) is not null 
-
+select * from employees
+	where salary in (select min(salary) from employees)
 --2
 
 CREATE TABLE products (
